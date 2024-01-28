@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 
-const SignUp = () => {
+const SignUp = (props) => {
+  const [signUpMode, setSignUpMood] = useState(true)
   const [inputs, setInputs] = useState({
     email: "",
     password: "",
@@ -19,8 +20,42 @@ const SignUp = () => {
     borderColor: "#00ADB5",
     backgroundColor: "#00ADB5",
   }
+  const handleSignIn = async () => {
+    try {
+      const response = await fetch(
+        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCGkRIX3D99xCNcQP0NCIf2N06cPpAyC80",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: inputs.email,
+            password: inputs.password,
+            returnSecureToken: true,
+          }),
+        }
+      )
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error.message || "Invalid email or password")
+      }
+      props.setId(data.idToken)
+      props.setLogIn(true)
+      console.log("Sign-in successful:", data)
+    } catch (error) {
+      console.error("Error during sign-in:", error.message)
+    }
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault()
+    if (!signUpMode) {
+      handleSignIn()
+      return
+    }
     if (inputs.password === inputs.confirmPassword) {
       try {
         const sendRequest = async () => {
@@ -69,7 +104,7 @@ const SignUp = () => {
       <div
         style={style3}
         //
-        className=" rounded-2xl  bg-slate-900 border-2 m-auto mt-6 w-[65%] grid grid-cols-2 h-[75vh]"
+        className=" rounded-2xl  bg-slate-900 border-2 m-auto mt-6 w-[65%] grid grid-cols-2 h-[80vh]"
       >
         <div
           style={style3}
@@ -79,6 +114,9 @@ const SignUp = () => {
         </div>
         <div className=" m-3 ml-0 relative bg-slate-500 rounded-r-2xl  2nd  px-8 py-5 ">
           <form onSubmit={handleSubmit} className="flex  flex-col">
+            <h1 className=" text-slate-700">
+              {signUpMode ? "Sign Up" : "Sign In"}
+            </h1>
             <div className="mb-2">
               <label
                 htmlFor="email"
@@ -122,34 +160,32 @@ const SignUp = () => {
               </div>
             }
 
-            {/* {!showLogInPage && ( */}
-            <div
-              className="mb-2
+            {signUpMode && (
+              <div
+                className="mb-2
                  
               "
-              initial={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <label
-                htmlFor="confirmPassword"
-                className="block text-start font-bold text-black mb-2"
               >
-                Confirm Password:
-              </label>
-              <input
-                type="password"
-                id="confirmPassword"
-                value={inputs.confirmPassword}
-                onChange={(e) =>
-                  setInputs((prev) => {
-                    return { ...prev, confirmPassword: e.target.value }
-                  })
-                }
-                className="w-full px-3 py-1 outline-none rounded-md border"
-                required
-              />
-            </div>
+                <label
+                  htmlFor="confirmPassword"
+                  className="block text-start font-bold text-black mb-2"
+                >
+                  Confirm Password:
+                </label>
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  value={inputs.confirmPassword}
+                  onChange={(e) =>
+                    setInputs((prev) => {
+                      return { ...prev, confirmPassword: e.target.value }
+                    })
+                  }
+                  className="w-full px-3 py-1 outline-none rounded-md border"
+                  required
+                />
+              </div>
+            )}
             {/* )} */}
 
             {/* {showLogInPage && ( */}
@@ -167,13 +203,18 @@ const SignUp = () => {
               type="submit"
               className="bg-blue-800 hover:bg-blue-600 font-bold self-center mt-4  text-white px-14 text-lg py-2 rounded-md"
             >
-              {"Sign Up"}
+              {signUpMode ? "Sign Up" : "Sign In"}
             </button>
             <p
-              // onClick={forgetPasswordHandler}
+              onClick={() => {
+                setSignUpMood(() => {
+                  if (signUpMode) return false
+                  return true
+                })
+              }}
               className="cursor-pointer underline text-red-900   hover:underline"
             >
-              Have an account?
+              {signUpMode ? "Have an account?" : " Want to sign up?"}
             </p>
           </form>
         </div>
