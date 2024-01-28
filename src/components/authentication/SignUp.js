@@ -46,7 +46,7 @@ const SignUp = (props) => {
       props.setLogIn(true)
       console.log("Sign-in successful:", data)
     } catch (error) {
-      console.error("Error during sign-in:", error.message)
+      alert(error.message)
     }
   }
 
