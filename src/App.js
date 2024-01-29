@@ -1,5 +1,6 @@
-import logo from "./logo.svg"
 import "./App.css"
+import Editor from "./components/Editor/Editor"
+
 import SignUp from "./components/authentication/SignUp"
 import { useState } from "react"
 function App() {
@@ -10,7 +11,7 @@ function App() {
       {!isLoggedIn ? (
         <SignUp setLogIn={setIsLoggedIn} setId={setIdToken}></SignUp>
       ) : (
-        <div>welcome</div>
+        <Editor></Editor>
       )}
     </div>
   )
