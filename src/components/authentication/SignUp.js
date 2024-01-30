@@ -1,7 +1,10 @@
 import React, { useState } from "react"
-
-const SignUp = (props) => {
+import { useSelector, useDispatch } from "react-redux"
+import { authActions } from "../../store/authSlice"
+const SignUp = () => {
   const [signUpMode, setSignUpMood] = useState(true)
+  const authState = useSelector((state) => state.auth)
+  const dispatch = useDispatch()
   const [inputs, setInputs] = useState({
     email: "",
     password: "",
@@ -42,9 +45,16 @@ const SignUp = (props) => {
       if (!response.ok) {
         throw new Error(data.error.message || "Invalid email or password")
       }
-      props.setId(data.idToken)
-      props.setLogIn(true)
+      dispatch(authActions.setLogIn(true))
+      dispatch(authActions.setEmail(data.email))
+      dispatch(authActions.setToken(data.idToken))
+      //   props.setId(data.idToken)
+      //   props.setLogIn(true)
       console.log("Sign-in successful:", data)
+      localStorage.setItem(
+        "user2",
+        JSON.stringify({ email: data.email, idToken: data.idToken })
+      )
     } catch (error) {
       alert(error.message)
     }
@@ -97,22 +107,22 @@ const SignUp = (props) => {
     setInputs({ email: "", password: "", confirmPassword: "" })
   }
   return (
-    <div style={style} className=" min-h-[100vh] ">
-      <div style={style2} className=" header h-14 w-screen bg-slate-900">
-        {" "}
-      </div>
+    <div style={style} className=" pt-12 min-h-[100vh] ">
+      {/* <div
+        style={style2}
+        className=" header h-14 items-center flex justify-center w-screen bg-slate-900"
+      >
+        <h1 className=" text-xl">Mailbox</h1>
+      </div> */}
       <div
         style={style3}
         //
-        className=" rounded-2xl  bg-slate-900 border-2 m-auto mt-6 w-[65%] grid grid-cols-2 h-[80vh]"
+        className=" rounded-2xl  bg-slate-900 border-2 m-auto  w-[65%] grid grid-cols-2 h-[80vh]"
       >
-        <div
-          style={style3}
-          className=" rounded-l-2xl 1st mr-0 bg-slate-400 m-3"
-        >
-          f
+        <div style={style3} className=" rounded-l-2xl 1st mr-0  m-3">
+          {" "}
         </div>
-        <div className=" m-3 ml-0 relative bg-slate-500 rounded-r-2xl  2nd  px-8 py-5 ">
+        <div className=" m-3 ml-0 relative  rounded-r-2xl  2nd  px-8 py-5 ">
           <form onSubmit={handleSubmit} className="flex  flex-col">
             <h1 className=" text-slate-700">
               {signUpMode ? "Sign Up" : "Sign In"}
