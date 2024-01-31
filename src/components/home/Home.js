@@ -68,7 +68,14 @@ const Home = () => {
         ) : (
           ""
         )}
-        {homeContent === "sentbox" ? <Sentbox></Sentbox> : ""}
+        {homeContent === "sentbox" ? (
+          <Sentbox
+            setHomeContent={setHomeContent}
+            setmaildetails={setmaildetails}
+          ></Sentbox>
+        ) : (
+          ""
+        )}
         {homeContent === "showmail" ? (
           <ShowMail
             message={maildetails.message}

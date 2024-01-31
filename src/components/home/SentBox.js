@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 
-const Sentbox = () => {
+const Sentbox = (props) => {
   const email = useSelector((state) => state.auth.email)
   const [mails, setMails] = useState([])
   console.log(mails)
@@ -38,7 +38,13 @@ const Sentbox = () => {
       <h1 className=" mb-6 pt-5">sentbox</h1>
 
       {mails.map((item) => (
-        <div className=" bg-slate-400 mb-1 w-[100%] p-4 py-0  flex">
+        <div
+          onClick={() => {
+            props.setmaildetails(item)
+            props.setHomeContent("showmail")
+          }}
+          className=" bg-slate-400 mb-1 w-[100%] p-4 py-0  flex"
+        >
           {" "}
           <h1 className=" w-[50%] bg-slate-100 ">Email:{item.email}</h1>
           <h2 className=" w-[50%]">Subject:{item.subject}</h2>
