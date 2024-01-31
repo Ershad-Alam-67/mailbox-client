@@ -1,13 +1,16 @@
 import React, { useState } from "react"
 import Editor from "../Editor/Editor"
 import { NavLink } from "react-router-dom"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { authActions } from "../../store/authSlice"
 import Mailbox from "./Mailbox"
 import Sentbox from "./SentBox"
+import ShowMail from "./ShowMail"
 
 const Home = () => {
   const [homeContent, setHomeContent] = useState("mailbox")
+  const [maildetails, setmaildetails] = useState({})
+  const totalUnread = useSelector((state) => state.mail.totalUnread)
   const dispatch = useDispatch()
   const logOutHandler = () => {
     dispatch(authActions.setLogIn(false))
@@ -31,11 +34,14 @@ const Home = () => {
             onClick={() => {
               setHomeContent("mailbox")
             }}
-            className={`cursor-pointer py-1 ${
+            className={`cursor-pointer py-1 relative  ${
               homeContent === "mailbox" ? "text-red-500" : ""
             }`}
           >
-            Mailbox
+            Mailbox{" "}
+            {homeContent !== "showmail" && (
+              <p className=" absolute right-6  inline-block ">{totalUnread}</p>
+            )}
           </li>
           <li
             onClick={() => {
@@ -54,8 +60,24 @@ const Home = () => {
       </div>
       <div className=" w-[80%] bg-red-200">
         {homeContent === "compose" ? <Editor></Editor> : ""}
-        {homeContent === "mailbox" ? <Mailbox></Mailbox> : ""}
+        {homeContent === "mailbox" ? (
+          <Mailbox
+            setHomeContent={setHomeContent}
+            setmaildetails={setmaildetails}
+          ></Mailbox>
+        ) : (
+          ""
+        )}
         {homeContent === "sentbox" ? <Sentbox></Sentbox> : ""}
+        {homeContent === "showmail" ? (
+          <ShowMail
+            message={maildetails.message}
+            email={maildetails.email}
+            subject={maildetails.subject}
+          ></ShowMail>
+        ) : (
+          ""
+        )}
       </div>
     </div>
   )

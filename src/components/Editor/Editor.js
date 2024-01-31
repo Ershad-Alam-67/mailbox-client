@@ -13,6 +13,7 @@ const Editor = () => {
     email: "",
     subject: "",
     message: value,
+    isRead: false,
   })
   console.log(typeof myEmail)
   useEffect(() => {
@@ -37,7 +38,8 @@ const Editor = () => {
       return { ...prev, message: value }
     })
   }, [value])
-  const sendText = async () => {
+  const sendText = async (e) => {
+    e.preventDefault()
     try {
       const response = await fetch(
         `https://mailbox-client-17386-default-rtdb.asia-southeast1.firebasedatabase.app/${id}/mailbox.json`,
@@ -52,6 +54,13 @@ const Editor = () => {
 
       if (response.ok) {
         console.log("Email sent successfully")
+        setValue("")
+        setMailDetails({
+          email: "",
+          subject: "",
+          message: value,
+          isRead: false,
+        })
         try {
           const response = await fetch(
             `https://mailbox-client-17386-default-rtdb.asia-southeast1.firebasedatabase.app/${myId}/sentbox.json`,
@@ -83,22 +92,29 @@ const Editor = () => {
   console.log(mailDetails)
   return (
     <div className=" flex my-7  justify-center h-auto  ">
-      <div className=" flex flex-col relative rounded-xl  h-[90vh] border shadow-lg w-[80%] pb-0  p-5 px-12 ">
+      <form
+        onSubmit={sendText}
+        className=" flex flex-col relative rounded-xl  h-[90vh] border shadow-lg w-[80%] pb-0  p-5 px-12 "
+      >
         <input
           placeholder="To:"
           className=" w-[100%] p-2 outline-none border-b-2"
-          type="text"
+          type="email"
+          value={mailDetails.email}
           onChange={(e) => {
             handleInputs({ email: e.target.value })
           }}
+          required
         />
         <input
           placeholder="Subject:"
           className=" w-[100%] p-2 outline-none border-b-2"
           type="text"
+          value={mailDetails.subject}
           onChange={(e) => {
             handleInputs({ subject: e.target.value })
           }}
+          required
         />
 
         <ReactQuill
@@ -106,14 +122,16 @@ const Editor = () => {
           theme="snow"
           value={value}
           onChange={setValue}
+          required
         ></ReactQuill>
         <button
-          onClick={sendText}
+          type="submit"
+          // onClick={sendText}
           className=" bg-slate-600 p-2 px-4 ml-auto w-[15%] m-3  "
         >
           Send
         </button>
-      </div>
+      </form>
     </div>
   )
 }

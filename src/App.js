@@ -5,6 +5,7 @@ import SignUp from "./components/authentication/SignUp"
 import { useState } from "react"
 import { Routes, Route, Navigate } from "react-router-dom"
 import { useSelector, useDispatch } from "react-redux"
+
 function App() {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn)
   const idToken = useSelector((state) => state.auth.isToken)
