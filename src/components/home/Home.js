@@ -39,7 +39,7 @@ const Home = () => {
             }`}
           >
             Mailbox{" "}
-            {homeContent !== "showmail" && (
+            {homeContent === "mailbox" && (
               <p className=" absolute right-6  inline-block ">{totalUnread}</p>
             )}
           </li>

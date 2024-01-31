@@ -9,6 +9,22 @@ const Mailbox = (props) => {
   const dispatch = useDispatch()
 
   console.log(mails)
+  const handleDelete = async (id) => {
+    const updatedMails = mails.filter((item) => item.id !== id)
+    setMails(updatedMails)
+    try {
+      const response = await fetch(
+        `https://mailbox-client-17386-default-rtdb.asia-southeast1.firebasedatabase.app/${
+          email.split(".")[0]
+        }/mailbox/${id}.json`,
+        { method: "DELETE" }
+      )
+      console.log(response)
+      if (!response.ok) throw new Error("Cannot delete now")
+    } catch (error) {
+      console.log(error.message)
+    }
+  }
   const setIsReadTrue = (mail) => {
     const response = fetch(
       `https://mailbox-client-17386-default-rtdb.asia-southeast1.firebasedatabase.app/${
@@ -84,18 +100,37 @@ const Mailbox = (props) => {
       <h1 className=" mb-6 pt-5">mails</h1>
 
       {mails.map((item) => (
-        <div
-          onClick={() => {
-            setIsReadTrue(item)
-            props.setmaildetails(item)
-            props.setHomeContent("showmail")
-          }}
-          className=" bg-slate-400 mb-1 w-[100%] p-4 py-0  flex"
-        >
+        <div className=" bg-slate-400 mb-1 w-[100%] p-4 py-0  flex">
           {" "}
           <h1 className=" w-[10%]">{item.isRead ? " read" : "unread"}</h1>
-          <h1 className=" w-[45%] bg-slate-100 ">Email:{item.email}</h1>
-          <h2 className=" w-[45%]">Subject:{item.subject}</h2>
+          <h1
+            onClick={() => {
+              setIsReadTrue(item)
+              props.setmaildetails(item)
+              props.setHomeContent("showmail")
+            }}
+            className=" w-[40%] bg-slate-100 "
+          >
+            Email:{item.email}
+          </h1>
+          <h2
+            onClick={() => {
+              setIsReadTrue(item)
+              props.setmaildetails(item)
+              props.setHomeContent("showmail")
+            }}
+            className=" w-[40%]"
+          >
+            Subject:{item.subject}
+          </h2>
+          <button
+            onClick={() => {
+              handleDelete(item.id)
+            }}
+            className=" bg-orange-400 w-[10%]"
+          >
+            delete
+          </button>
         </div>
       ))}
     </div>
