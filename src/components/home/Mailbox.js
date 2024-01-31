@@ -78,7 +78,7 @@ const Mailbox = (props) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        //console.log("fetch called")
+        console.log("fetch called")
         const data = (await getMails()) || {}
         const keys = Object.keys(data)
         const mailItems = keys.map((item) => {
@@ -93,6 +93,9 @@ const Mailbox = (props) => {
       }
     }
     fetchData()
+    const interval = setInterval(() => {
+      fetchData()
+    }, 2000)
   }, [email])
 
   return (
