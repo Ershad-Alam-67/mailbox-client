@@ -1,37 +1,75 @@
 import React, { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
+import useFetch from "../hooks/useFetch"
 
 const Sentbox = (props) => {
   const email = useSelector((state) => state.auth.email)
   const [mails, setMails] = useState([])
   console.log(mails)
-  const getMails = async () => {
-    const response = await fetch(
-      `https://mailbox-client-17386-default-rtdb.asia-southeast1.firebasedatabase.app/${
-        email.split(".")[0]
-      }/sentbox.json`
-    )
-    if (!response.ok) throw new Error("Could not fetch mails")
-    const data = await response.json()
-    return data
-  }
+
+  const { data, error } = useFetch({
+    url: `https://mailbox-client-17386-default-rtdb.asia-southeast1.firebasedatabase.app/${
+      email.split(".")[0]
+    }/sentbox.json`,
+  })
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = (await getMails()) || {}
-        const keys = Object.keys(data)
-        const mailItems = keys.map((item) => data[item])
-
-        setMails(mailItems)
-        console.log(mailItems)
-      } catch (error) {
-        console.log(error)
-      }
+    if (error) {
+      console.log(error)
+      return
     }
 
-    fetchData()
-  }, [email])
+    const keys = Object.keys(data)
+    const mailItems = keys.map((item) => data[item])
+    setMails(mailItems)
+  }, [data, error])
+
+  // const keys = Object.keys(data)
+  // const mailItems = keys.map((item) => data[item])
+  // useEffect(() => {
+  //   setMails(mailItems)
+  // }, [mailItems])
+  // // console.log(a, "aaaaaaaaaaaa")
+  // // const keys = Object.keys(data)
+  // // const mailItems = keys.map((item) => data[item])
+  // // useEffect(() => {
+  // //   setMails(mailItems)
+  // // }, [mailItems])
+  // const getMails = async () => {
+  //   const response = await fetch(
+  //     `https://mailbox-client-17386-default-rtdb.asia-southeast1.firebasedatabase.app/${
+  //       email.split(".")[0]
+  //     }/sentbox.json`
+  //   )
+  //   if (!response.ok) throw new Error("Could not fetch mails")
+  //   const data = await response.json()
+  //   return data
+  // }
+
+  // useEffect(() => {
+  //   // const { data, error } = useFetch({
+  //   //   url: `https://mailbox-client-17386-default-rtdb.asia-southeast1.firebasedatabase.app/${
+  //   //     email.split(".")[0]
+  //   //   }/sentbox.json`,
+  //   // })
+  //   // // if (error) throw new Error("kk")
+  //   // const mailItems = keys.map((item) => data[item])
+  //   // setMails(mailItems)
+  //   const fetchData = async () => {
+  //     try {
+  //       const data = (await getMails()) || {}
+  //       const keys = Object.keys(data)
+  //       const mailItems = keys.map((item) => data[item])
+
+  //       setMails(mailItems)
+  //       console.log(mailItems)
+  //     } catch (error) {
+  //       console.log(error)
+  //     }
+  //   }
+
+  //   fetchData()
+  // }, [email])
 
   return (
     <div className=" bg-slate-300">

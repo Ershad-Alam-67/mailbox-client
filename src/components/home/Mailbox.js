@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { json } from "react-router-dom"
+import useFetch from "../hooks/useFetch"
+
 import { mailActions } from "../../store/mailsSlice"
 const Mailbox = (props) => {
   const email = useSelector((state) => state.auth.email)
@@ -62,6 +63,12 @@ const Mailbox = (props) => {
     dispatch(mailActions.setTotalUnread(total))
     //setTotalUnread(total)
   }, [mails])
+  // const getMails = useFetch({
+  //   url: `https://mailbox-client-17386-default-rtdb.asia-southeast1.firebasedatabase.app/${
+  //     email.split(".")[0]
+  //   }/mailbox.json`,
+  // })
+  // console.log(data)
   const getMails = async () => {
     const response = await fetch(
       `https://mailbox-client-17386-default-rtdb.asia-southeast1.firebasedatabase.app/${
@@ -93,9 +100,9 @@ const Mailbox = (props) => {
       }
     }
     fetchData()
-    const interval = setInterval(() => {
-      fetchData()
-    }, 2000)
+    // const interval = setInterval(() => {
+    //   fetchData()
+    // }, 2000)
   }, [email])
 
   return (
